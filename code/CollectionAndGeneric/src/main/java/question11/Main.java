@@ -1,5 +1,4 @@
-import question11.LRUCache;
-import question2.FailFastVSFailSafe;
+package question11;
 
 public class Main {
     public static void main(String[] args) {

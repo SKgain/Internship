@@ -1,7 +1,6 @@
-package question2;
+package question12;
 
 import java.util.ArrayList;
-import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.List;
 
