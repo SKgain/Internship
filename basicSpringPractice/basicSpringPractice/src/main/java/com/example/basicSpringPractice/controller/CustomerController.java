@@ -1,0 +1,54 @@
+package com.example.basicSpringPractice.controller;
+
+import com.example.basicSpringPractice.DTO.requestDTO.UpdateCustomerProfileRequestDTO;
+import com.example.basicSpringPractice.DTO.responseDTO.CustomerResponseDTO;
+import com.example.basicSpringPractice.service.CustomerService;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("api/v1")
+@RequiredArgsConstructor
+public class CustomerController {
+    private final CustomerService customerService;
+
+    @GetMapping("/customer")
+    public ResponseEntity<List<CustomerResponseDTO>> getAllCustomers(){
+        return customerService.getAllCustomer();
+    }
+
+    @GetMapping("/customer/{id}")
+    public ResponseEntity<CustomerResponseDTO> getCustomer(
+            @PathVariable int id
+    ) {
+        return customerService.getCustomer(id);
+    }
+    @GetMapping("/customer/grater-then-age")
+    public ResponseEntity<List<CustomerResponseDTO>> getAllCustomersWithAge(@RequestParam int age){
+        return customerService.getAllCustomersWithAge(age);
+    }
+
+    @GetMapping("/customer/ordered-by-age")
+    public ResponseEntity<List<CustomerResponseDTO>> getCustomerOrderByAg(){
+        return customerService.getCustomerOrderByAge();
+    }
+    @PutMapping("/customer/update-profile/{id}")
+    public ResponseEntity<?> updateProfile(
+            @PathVariable int id,
+            @Valid @RequestBody UpdateCustomerProfileRequestDTO dto
+    ){
+        return customerService.updateProfile(id,dto);
+    }
+
+    @DeleteMapping("/customer/delete/{id}")
+    public ResponseEntity<String> deleteCustomer(
+            @PathVariable int id
+    ){
+        return customerService.deleteCustomer(id);
+    }
+
+}
