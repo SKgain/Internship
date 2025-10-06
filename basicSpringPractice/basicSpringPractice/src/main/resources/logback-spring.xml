@@ -19,6 +19,8 @@
             <fileNamePattern>logs/app-%d{yyyy-MM-dd}.log</fileNamePattern>
             <!-- Keep last 7 days -->
             <maxHistory>7</maxHistory>
+            <!-- Keep 2GB file -->
+            <maxFileSize>2GB</maxFileSize>
         </rollingPolicy>
 
         <encoder>
