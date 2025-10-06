@@ -9,6 +9,7 @@ import com.example.basicSpringPractice.exception.ResourceNotFoundException;
 import com.example.basicSpringPractice.repository.CustomerRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class CustomerService {
     private final CustomerRepository customerRepository;
     private final ModelMapper modelMapper;
@@ -68,13 +70,14 @@ public class CustomerService {
         Optional<Customer> customer = customerRepository.findByEmail(dto.getEmail());
 
         if (customer.isEmpty()) {
+            log.error("Invalid email");
             throw new ResourceNotFoundException("Invalid email");
         }
 
         if (customer.get().getPassword().equals(dto.getPassword())) {
+            log.error("Invalid password ");
             throw new ResourceNotFoundException("Invalid password");
         }
-
         return ResponseEntity.ok().body("Successfully logged in");
     }
 

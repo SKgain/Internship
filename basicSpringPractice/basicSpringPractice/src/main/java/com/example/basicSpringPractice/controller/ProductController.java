@@ -54,7 +54,7 @@ public class ProductController {
     ){
         return productService.deleteProduct(id);
     }
-
+//specification api
     @GetMapping("/product/search")
     public ResponseEntity<List<ProductResponseDT0>> getAllProductsBySearch(
             @RequestParam(required = false) Integer id,
@@ -65,13 +65,13 @@ public class ProductController {
     {
         return productService.getAllProductsBySearch(id, name, type, price);
     }
-
+//pagination and sorting
     @GetMapping("/product/pagination")
     public ResponseEntity<PaginatedResponse<ProductResponseDT0>> getAllProductsByPagination(
-            @RequestParam(name=PAGE_NO) int pageNo,
-            @RequestParam(name=PAGE_SIZE) int size,
-            @RequestParam(name = ORDER_BY) String orderBy,
-            @RequestParam(name = SORT_ORDER) String sortOrder
+            @RequestParam(name=PAGE_NO,defaultValue = "0") int pageNo,
+            @RequestParam(name=PAGE_SIZE, defaultValue = "10") int size,
+            @RequestParam(name = ORDER_BY, defaultValue = "id") String orderBy,
+            @RequestParam(name = SORT_ORDER, defaultValue = "asc") String sortOrder
     ){
         PaginationArgs paginationArgs = new PaginationArgs(pageNo, size, orderBy, sortOrder);
         Page<Product> page = productService.getAllProductsByPagination(paginationArgs);
@@ -84,6 +84,7 @@ public class ProductController {
                         product.getType()
                 )
         );
-        return new ResponseEntity<>(paginationUtil.buildPaginatedResponse(dtoPage), HttpStatus.OK);
+//        return new ResponseEntity<>(paginationUtil.buildPaginatedResponse(dtoPage), HttpStatus.OK);
+        return ResponseEntity.ok().body(paginationUtil.buildPaginatedResponse(dtoPage));
     }
 }

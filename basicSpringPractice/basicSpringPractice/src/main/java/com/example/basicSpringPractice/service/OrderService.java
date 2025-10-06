@@ -9,6 +9,7 @@ import com.example.basicSpringPractice.repository.CustomerRepository;
 import com.example.basicSpringPractice.repository.OrderRepository;
 import com.example.basicSpringPractice.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class OrderService {
 
     private final OrderRepository orderRepository;
@@ -38,10 +40,17 @@ public class OrderService {
         Order order = new Order();
         order.setCustomer(customerRepository.findById(customerID).orElseThrow(() -> new ResourceNotFoundException("Customer not found!")));
         List<Product> orderedProductList = new ArrayList<>();
-        for (Integer product : productID) {
-            Product orderedProduct = productRepository.findById(product)
-                    .orElseThrow(() -> new ResourceNotFoundException("Product not found!"));
+        for (Integer id : productID) {
+            Product orderedProduct = productRepository.findById(id)
+                    .orElseThrow(() -> {
+                        log.error("Product not found with id={}", id);
+                        return new ResourceNotFoundException("Product not found!");
+                    });
+
             if (orderedProduct.getQuantity() < dto.getQuantity()) {
+                log.debug("Available product: {} | Ordered quantity: {}",
+                        orderedProduct.getQuantity(),
+                        dto.getQuantity());
                 throw new ResourceNotFoundException("Available product: " + orderedProduct.getQuantity());
             }
             orderedProduct.setQuantity(orderedProduct.getQuantity() - dto.getQuantity());
