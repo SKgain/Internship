@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -24,6 +25,8 @@ import java.util.Optional;
 public class CustomerService {
     private final CustomerRepository customerRepository;
     private final ModelMapper modelMapper;
+
+    BCryptPasswordEncoder encoder = new  BCryptPasswordEncoder(10);
 
     public ResponseEntity<CustomerResponseDTO> getCustomer(int id) {
         Customer customer = customerRepository.findById(id)
@@ -58,7 +61,7 @@ public class CustomerService {
         Customer customer = new Customer();
         customer.setName(dto.getName());
         customer.setEmail(dto.getEmail());
-        customer.setPassword(dto.getPassword());
+        customer.setPassword(encoder.encode(dto.getPassword()));
         customer.setAge(dto.getAge());
         customer.setActive(true);
         customer.setVerify(false);
