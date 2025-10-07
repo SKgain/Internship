@@ -12,6 +12,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +28,8 @@ import java.util.Optional;
 public class CustomerService {
     private final CustomerRepository customerRepository;
     private final ModelMapper modelMapper;
+    private final AuthenticationManager authenticationManager;
+    private final JWTService jwtService;
 
     BCryptPasswordEncoder encoder = new  BCryptPasswordEncoder(10);
 
@@ -70,18 +75,14 @@ public class CustomerService {
     }
 
     public ResponseEntity<String> customerLogin(@Valid LoginRequestDTO dto) {
-        Optional<Customer> customer = customerRepository.findByEmail(dto.getEmail());
-
-        if (customer.isEmpty()) {
-            log.error("Invalid email");
-            throw new ResourceNotFoundException("Invalid email");
+        Authentication authentication =  authenticationManager
+                .authenticate(new UsernamePasswordAuthenticationToken(dto.getEmail(), dto.getPassword()));
+        if(authentication.isAuthenticated()){
+            return ResponseEntity.ok().body(jwtService.generateToken(dto.getEmail()));
         }
-
-        if (customer.get().getPassword().equals(dto.getPassword())) {
-            log.error("Invalid password ");
-            throw new ResourceNotFoundException("Invalid password");
+        else{
+            return ResponseEntity.badRequest().body("Wrong email or password");
         }
-        return ResponseEntity.ok().body("Successfully logged in");
     }
 
     public ResponseEntity<List<CustomerResponseDTO>> getCustomerOrderByAge() {

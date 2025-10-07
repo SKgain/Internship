@@ -19,5 +19,4 @@ public interface CustomerRepository extends JpaRepository<Customer, Integer> {
     @Query(value="SELECT * FROM Customer WHERE age>:age ORDER BY age ASC", nativeQuery=true)
     List<Customer> getAllCustomersWithAge(int age);
 
-    Optional<Customer> findByName(String username);
 }
