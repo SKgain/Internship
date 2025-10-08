@@ -5,6 +5,7 @@ import com.example.basicSpringPractice.DTO.responseDTO.OrderResponseDTO;
 import com.example.basicSpringPractice.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,13 +16,15 @@ import java.util.List;
 public class OrderController {
     private final OrderService orderService;
 
-    @GetMapping("/odres/all")
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/admin/odres/all")
     public List<OrderResponseDTO> getAllOrders() {
 
         return orderService.getAllOrders();
     }
 
-    @PostMapping("order/create")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
+    @PostMapping("/user/order/create")
     public ResponseEntity<String> createOrder(
             @RequestParam int customerID,
             @RequestParam List<Integer> productID,
@@ -30,7 +33,8 @@ public class OrderController {
         return orderService.createOrder(customerID, productID, dto);
     }
 
-    @DeleteMapping("/order/delete/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping("/admin/order/delete/{id}")
     public ResponseEntity<String> deleteOrder(
             @PathVariable int id
     ){

@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -24,22 +25,25 @@ import static com.example.basicSpringPractice.constant.AppConstant.*;
 @RequiredArgsConstructor
 public class ProductController {
     private final ProductService productService;
-    private final PaginationUtil  paginationUtil;
+    private final PaginationUtil paginationUtil;
     private final ModelMapper modelMapper;
 
-    @PostMapping("/product/add")
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/admin/product/add")
     public ResponseEntity<Product> addProduct(
             @Valid @RequestBody ProductRequestDTO product
     ) {
         return productService.addProduct(product);
     }
 
-    @GetMapping("/product")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
+    @GetMapping("/user/product")
     public ResponseEntity<List<ProductResponseDT0>> getAllProducts() {
         return productService.getAllProducts();
     }
 
-    @PutMapping("/product/update/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/admin/product/update/{id}")
     public ResponseEntity<ProductResponseDT0> updateProduct(
             @Valid @RequestBody ProductRequestDTO dto,
             @PathVariable int id
@@ -47,31 +51,35 @@ public class ProductController {
         return productService.updateProduct(dto, id);
     }
 
-    @DeleteMapping("/product/delete/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping("/admin/product/delete/{id}")
     public ResponseEntity<String> deleteProduct(
             @PathVariable int id
-    ){
+    ) {
         return productService.deleteProduct(id);
     }
-//specification api
-    @GetMapping("/product/search")
+
+    //specification api
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
+    @GetMapping("/user/product/search")
     public ResponseEntity<List<ProductResponseDT0>> getAllProductsBySearch(
             @RequestParam(required = false) Integer id,
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String type,
             @RequestParam(required = false) Double price
-    )
-    {
+    ) {
         return productService.getAllProductsBySearch(id, name, type, price);
     }
-//pagination and sorting
-    @GetMapping("/product/pagination")
+
+    //pagination and sorting
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
+    @GetMapping("/user/product/pagination")
     public ResponseEntity<PaginatedResponse<ProductResponseDT0>> getAllProductsByPagination(
-            @RequestParam(name=PAGE_NO,defaultValue = "0") int pageNo,
-            @RequestParam(name=PAGE_SIZE, defaultValue = "10") int size,
+            @RequestParam(name = PAGE_NO, defaultValue = "0") int pageNo,
+            @RequestParam(name = PAGE_SIZE, defaultValue = "10") int size,
             @RequestParam(name = ORDER_BY, defaultValue = "id") String orderBy,
             @RequestParam(name = SORT_ORDER, defaultValue = "asc") String sortOrder
-    ){
+    ) {
         PaginationArgs paginationArgs = new PaginationArgs(pageNo, size, orderBy, sortOrder);
         Page<Product> page = productService.getAllProductsByPagination(paginationArgs);
         Page<ProductResponseDT0> dtoPage = page.map(product ->

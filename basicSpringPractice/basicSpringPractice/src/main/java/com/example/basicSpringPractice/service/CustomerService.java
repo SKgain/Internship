@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -31,7 +32,7 @@ public class CustomerService {
     private final AuthenticationManager authenticationManager;
     private final JWTService jwtService;
 
-    BCryptPasswordEncoder encoder = new  BCryptPasswordEncoder(10);
+    BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(10);
 
     public ResponseEntity<CustomerResponseDTO> getCustomer(int id) {
         Customer customer = customerRepository.findById(id)
@@ -68,6 +69,7 @@ public class CustomerService {
         customer.setEmail(dto.getEmail());
         customer.setPassword(encoder.encode(dto.getPassword()));
         customer.setAge(dto.getAge());
+        customer.setRoles(Set.of("ROLE_USER"));
         customer.setActive(true);
         customer.setVerify(false);
         customerRepository.save(customer);
@@ -75,12 +77,11 @@ public class CustomerService {
     }
 
     public ResponseEntity<String> customerLogin(@Valid LoginRequestDTO dto) {
-        Authentication authentication =  authenticationManager
+        Authentication authentication = authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(dto.getEmail(), dto.getPassword()));
-        if(authentication.isAuthenticated()){
+        if (authentication.isAuthenticated()) {
             return ResponseEntity.ok().body(jwtService.generateToken(dto.getEmail()));
-        }
-        else{
+        } else {
             return ResponseEntity.badRequest().body("Wrong email or password");
         }
     }

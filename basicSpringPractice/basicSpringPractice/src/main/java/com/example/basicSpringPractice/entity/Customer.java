@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Data
@@ -21,6 +22,8 @@ public class Customer {
     private String address;
     private String email;
     private String phone;
+    @ElementCollection(fetch = FetchType.EAGER)
+    private Set<String> roles;
     private  int age;
     private String password;
     private boolean active;
