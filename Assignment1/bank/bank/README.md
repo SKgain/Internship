@@ -36,7 +36,7 @@ A simple banking system built with **Spring Boot**, featuring **JWT authenticati
 - Spring Boot 3
 - Spring Security with JWT
 - Spring Data JPA
-- H2 / MySQL database (configurable)
+- postgreSQL database
 - ModelMapper
 - Lombok
 - Maven
@@ -45,7 +45,7 @@ A simple banking system built with **Spring Boot**, featuring **JWT authenticati
 Before you begin, ensure you have the following installed:
 - Java Development Kit (JDK) 17 or later
 - Apache Maven
-- A running instance of MySQL (or you can use the default H2 in-memory database)
+- A running instance of postgreSQL
 
 ## Getting Started
 Follow these steps to get a local copy of the project up and running.
@@ -60,11 +60,13 @@ cd bank-api
 #### Open the src/main/resources/application.properties file and update the datasource properties to match your local database setup.
 
 MySQL Database Configuration
+```bash
 spring.datasource.url=jdbc:mysql://localhost:3306/bank
 spring.datasource.username=root
 spring.datasource.password=yourpassword
 spring.jpa.hibernate.ddl-auto=update
 spring.jpa.show-sql=true
+```
 
 ### 3. Build the Project
 
@@ -95,6 +97,7 @@ To use the secured endpoints, first register and sign in to get a JWT. Include t
 | /api/transactions         | GET    | List all transactions for a user   | Yes     |
 
 ## Project Structure
+```
 src/main/java/com/example/bank/
 ├── config/       # Security & App configuration
 ├── controller/   # REST controllers
@@ -105,3 +108,4 @@ src/main/java/com/example/bank/
 ├── repository/   # Spring Data JPA repositories
 ├── service/      # Business logic
 └── BankApplication.java
+```
