@@ -14,11 +14,11 @@ import java.util.List;
 @RestController
 @RequestMapping("api/v1")
 @RequiredArgsConstructor
-public class    CustomerController {
+public class CustomerController {
     private final CustomerService customerService;
 
-    @PreAuthorize("hasAnyRole('USER','ADMIN')")
-    @GetMapping("/user/customer")
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/admin/customer")
     public ResponseEntity<List<CustomerResponseDTO>> getAllCustomers(){
         return customerService.getAllCustomer();
     }

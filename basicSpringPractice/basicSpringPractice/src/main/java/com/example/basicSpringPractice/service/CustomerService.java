@@ -112,4 +112,14 @@ public class CustomerService {
         }
         return ResponseEntity.ok(customerResponseDTOS);
     }
+
+    public String updateUserRole(Set<String> role,int id) {
+
+        Customer customer = customerRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Customer Not Found"));
+
+        customer.setRoles(role);
+
+        return customerRepository.save(customer).getEmail();
+    }
 }

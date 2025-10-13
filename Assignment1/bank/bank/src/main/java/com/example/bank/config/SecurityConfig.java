@@ -1,12 +1,11 @@
-package com.example.basicSpringPractice.config;
+package com.example.bank.config;
 
-import com.example.basicSpringPractice.filter.JwtFilter;
-import com.example.basicSpringPractice.service.JWTService;
+import com.example.bank.filter.JwtFilter;
+import com.example.bank.service.JWTService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -20,9 +19,9 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
+@RequiredArgsConstructor
 @EnableWebSecurity
 @EnableMethodSecurity
-@RequiredArgsConstructor
 public class SecurityConfig {
 
     private final UserDetailsService userDetailsService;
@@ -34,27 +33,20 @@ public class SecurityConfig {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(requests -> requests
-                        .requestMatchers("/api/v1/registration","/api/v1/login")
+                        .requestMatchers(
+                                "/api/auth/sign-in",
+                                "/api/auth/sign-up",
+                                "/public/**",
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**")
                         .permitAll()
-                        .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/api/v1/user/**").hasAnyRole("USER","ADMIN")
+                        .requestMatchers("/api/**").hasRole("USER")
                         .anyRequest().authenticated())
-//                .formLogin(Customizer.withDefaults())
-                .httpBasic(Customizer.withDefaults())
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
-
-//    @Bean
-//    public AuthenticationProvider  authenticationProvider() {
-//        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-//        provider.setPasswordEncoder(new BCryptPasswordEncoder(10));
-//        provider.setUserDetailsService(userDetailsService);
-//
-//        return provider;
-//    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -65,5 +57,4 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
-
 }
