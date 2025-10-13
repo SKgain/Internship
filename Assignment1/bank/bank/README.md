@@ -1,109 +1,89 @@
-Bank API
-A simple banking system built with Spring Boot, featuring JWT authentication, account management, and transaction tracking.
+# Bank API
 
-Features
-Authentication
-User registration and login
+A simple banking system built with **Spring Boot**, featuring **JWT authentication**, account management, and transaction tracking.
 
-Password encryption using BCrypt
+## Features
 
-JWT-based authentication and authorization
+### Authentication
+- User registration and login
+- Password encryption using BCrypt
+- JWT-based authentication and authorization
 
-Account Management
-Initialize account balance
+### Account Management
+- Initialize account balance
+- Deposit money
+- Transfer money between accounts
+- View transaction history
 
-Deposit money
+### Validation & Exception Handling
+- Input validation using `jakarta.validation`
+- Custom exceptions:
+  - `ResourceNotFoundException`
+  - `InsufficientBalanceException`
+  - `DuplicateResourceException`
+- Planned: Global exception handling using `@ControllerAdvice`
 
-Transfer money between accounts
+### Database & Utilities
+- **ORM:** Spring Data JPA repositories
+- **Entities:** `User`, `Account`, `Transaction`
+- **Relationships:** 
+  - `User ↔ Account (OneToOne)`
+  - `User ↔ Transaction (OneToMany)`
+- **Utilities:** ModelMapper for DTO mapping, Lombok for boilerplate reduction, Slf4j for logging
 
-View transaction history
+## Technologies Used
+- Java 17+
+- Spring Boot 3
+- Spring Security with JWT
+- Spring Data JPA
+- H2 / MySQL database (configurable)
+- ModelMapper
+- Lombok
+- Maven
 
-Validation & Exception Handling
-Input validation using jakarta.validation
-
-Custom exceptions:
-
-ResourceNotFoundException
-
-InsufficientBalanceException
-
-DuplicateResourceException
-
-Planned: Global exception handling using @ControllerAdvice
-
-Database & Utilities
-ORM: Spring Data JPA repositories
-
-Entities: User, Account, Transaction
-
-Relationships: User ↔ Account (OneToOne), User ↔ Transaction (OneToMany)
-
-Utilities: ModelMapper for DTO mapping, Lombok for boilerplate reduction, Slf4j for logging
-
-Technologies Used
-Java 17+
-
-Spring Boot 3
-
-Spring Security with JWT
-
-Spring Data JPA
-
-H2 / MySQL database (configurable)
-
-ModelMapper
-
-Lombok
-
-Maven
-
-Prerequisites
+## Prerequisites
 Before you begin, ensure you have the following installed:
+- Java Development Kit (JDK) 17 or later
+- Apache Maven
+- A running instance of MySQL (or you can use the default H2 in-memory database)
 
-Java Development Kit (JDK) 17 or later
-
-Apache Maven
-
-A running instance of MySQL (or you can use the default H2 in-memory database)
-
-Getting Started
+## Getting Started
 Follow these steps to get a local copy of the project up and running.
 
-1. Clone the Repository
-Bash
-
+### 1. Clone the Repository
+```bash
 git clone https://github.com/your-username/bank-api.git
 cd bank-api
-2. Configure Application Properties
-Open the src/main/resources/application.properties file and update the datasource properties to match your local database setup.
+```
+### 2. Configure Application Properties
 
-Properties
+#### Open the src/main/resources/application.properties file and update the datasource properties to match your local database setup.
 
-# MySQL Database Configuration
+MySQL Database Configuration
 spring.datasource.url=jdbc:mysql://localhost:3306/bank
 spring.datasource.username=root
 spring.datasource.password=yourpassword
 spring.jpa.hibernate.ddl-auto=update
 spring.jpa.show-sql=true
 
-# Add a secure key for JWT signing
-jwt.secret=your-super-secret-key-for-jwt-token
-3. Build the Project
+### 3. Build the Project
+
 Use Maven to compile the project and download all necessary dependencies.
-
-Bash
-
+```bash
 mvn clean install
-4. Run the Application
-You can now run the Spring Boot application using the following command.
+```
+### 4. Run the Application
 
-Bash
-
+Run the Spring Boot application:
+```bash
 mvn spring-boot:run
+```
+
 The API will be running on http://localhost:8080.
 
 API Endpoints
-To use the secured endpoints, you must first register and sign in to get a JWT. Include this token in the Authorization header of your requests as a Bearer token.
+
+To use the secured endpoints, first register and sign in to get a JWT. Include this token in the Authorization header as a Bearer token.
 
 Endpoint	Method	Description	Secured
 /api/auth/sign-up	POST	Register a new user	No
@@ -112,8 +92,6 @@ Endpoint	Method	Description	Secured
 /api/accounts/deposit	POST	Deposit money into an account	Yes
 /api/accounts/transfer	POST	Transfer money between accounts	Yes
 /api/transactions	GET	List all transactions for a user	Yes
-
-Export to Sheets
 Project Structure
 src/main/java/com/example/bank/
 ├── config/       # Security & App configuration
