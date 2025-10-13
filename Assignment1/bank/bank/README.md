@@ -85,14 +85,14 @@ API Endpoints
 
 To use the secured endpoints, first register and sign in to get a JWT. Include this token in the Authorization header as a Bearer token.
 
-Endpoint	Method	Description	Secured
+## Endpoint	Method	Description	Secured
 /api/auth/sign-up	POST	Register a new user	No
 /api/auth/sign-in	POST	Login and receive a JWT token	No
 /api/accounts/init	POST	Initialize account balance	Yes
 /api/accounts/deposit	POST	Deposit money into an account	Yes
 /api/accounts/transfer	POST	Transfer money between accounts	Yes
 /api/transactions	GET	List all transactions for a user	Yes
-Project Structure
+## Project Structure
 src/main/java/com/example/bank/
 ├── config/       # Security & App configuration
 ├── controller/   # REST controllers
